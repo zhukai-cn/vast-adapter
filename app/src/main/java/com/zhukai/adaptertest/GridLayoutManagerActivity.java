@@ -57,7 +57,7 @@ public class GridLayoutManagerActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getLayoutIndex(int position) {
+        public int getItemViewIndex(int position) {
             return 0;
         }
     };

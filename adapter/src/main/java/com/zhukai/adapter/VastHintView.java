@@ -16,6 +16,11 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
+/**
+ * 缺省图View
+ * 默认样式为整体内容居中，内容包括上为图片，下为文字。
+ * 支持完全自定义View修改内容。
+ */
 public class VastHintView extends RelativeLayout {
 
     private RelativeLayout root;
@@ -63,47 +68,75 @@ public class VastHintView extends RelativeLayout {
             this.mContext = context;
         }
 
+        /**
+         * 设置自定义缺省图View
+         */
         public Builder setCustomView(View view) {
             this.customView = view;
             return this;
         }
 
-        public Builder setDrawableRes(@DrawableRes int res) {
+        /**
+         * 设置Drawable资源id
+         */
+        public Builder setImageResource(@DrawableRes int res) {
             this.imgDrawable = ContextCompat.getDrawable(mContext, res);
             return this;
         }
 
-        public Builder setDrawable(Drawable drawable) {
+        /**
+         * 设置Drawable
+         */
+        public Builder setImageDrawable(Drawable drawable) {
             this.imgDrawable = drawable;
             return this;
         }
 
+        /**
+         * 设置文本资源id
+         */
         public Builder setText(@StringRes int res) {
             this.textString = mContext.getString(res);
             return this;
         }
 
+        /**
+         * 设置文本
+         */
         public Builder setText(String str) {
             this.textString = str;
             return this;
         }
 
+        /**
+         * 设置文字颜色资源id
+         */
         public Builder setTextColorRes(@ColorRes int textColorRes) {
-            this.textColorInt = ContextCompat.getColor(mContext,textColorRes);
+            this.textColorInt = ContextCompat.getColor(mContext, textColorRes);
             return this;
         }
 
+        /**
+         * 设置文字颜色值
+         */
         public Builder setTextColor(@ColorInt int textColorInt) {
             this.textColorInt = textColorInt;
             return this;
         }
 
+        /**
+         * 设置字体大小
+         *
+         * @param textSize sp
+         */
         public Builder setTextSize(int textSize) {
             this.textSize = textSize;
             return this;
         }
 
-
+        /**
+         * 根据内容构建缺省图View
+         */
         public VastHintView build() {
 
             VastHintView vastHintView = new VastHintView(mContext);
@@ -131,7 +164,7 @@ public class VastHintView extends RelativeLayout {
                         hintText.setTextSize(textSize);
                     }
 
-                    if (textColorInt != 0){
+                    if (textColorInt != 0) {
                         hintText.setTextColor(textColorInt);
                     }
                 }

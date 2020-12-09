@@ -160,7 +160,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         }
 
         VastHolder vastHolder = new VastHolder(LayoutInflater.from(parent.getContext()).inflate(layoutIds[viewType], parent, false));
-        vastHolder.setLayoutIndex(viewType);
+        vastHolder.setItemViewIndex(viewType);
 
         if (null != mOnItemClickListener) {
             vastHolder.setOnClickListener(itemClickListenerProxy);
@@ -205,7 +205,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         if (isHeader(position) || isFooter(position)) {
             return positionFlag(position);
         }
-        return getLayoutIndex(position);
+        return getItemViewIndex(position);
     }
 
     /**
@@ -412,7 +412,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      *
      * @return 返回layout的下标
      */
-    public int getLayoutIndex(int position) {
+    public int getItemViewIndex(int position) {
         return 0;
     }
 
