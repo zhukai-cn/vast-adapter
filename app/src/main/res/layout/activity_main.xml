@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/llm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#eee453"
+        android:gravity="center"
+        android:text="LinearLayoutManager">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/glm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#e32253"
+        android:gravity="center"
+        android:text="GridLayoutManager">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/sglm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#835253"
+        android:gravity="center"
+        android:text="StaggeredGridLayoutManager">
+
+    </TextView>
+
+</LinearLayout>
