@@ -23,47 +23,20 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class VastHolder extends RecyclerView.ViewHolder {
 
-    private SparseArray<View> views = new SparseArray<>();
+    /**
+     * ItemView的布局下标
+     */
+    public int itemViewIndex = -1;
 
-    private int mViewIndex = -1;
-
-    void setItemViewIndex(int index) {
-        this.mViewIndex = index;
-    }
 
     VastHolder(@NonNull View itemView) {
         super(itemView);
     }
 
-    void setOnLongClickListener(final VastAdapter.OnItemLongClickListener l) {
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                return l.onLongClick(getLayoutPosition());
-            }
-        });
-    }
-
-    void setOnClickListener(final VastAdapter.OnItemClickListener l) {
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                l.onClick(getLayoutPosition());
-            }
-        });
-    }
-
-
-    /**
-     * 获取layout资源的下标
-     */
-    public int getItemViewIndex() {
-        return mViewIndex;
-    }
+    private SparseArray<View> views = new SparseArray<>();
 
     /**
      * 通过id获取View
-     *
      *
      * @param id 资源id
      */

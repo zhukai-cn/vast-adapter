@@ -22,6 +22,7 @@ public class GridLayoutManagerActivity extends AppCompatActivity {
     private RecyclerView mListRv;
 
     private List<String> datas = new ArrayList<>();
+    private View headerOrFooterView;
 
     public static final void launch(Activity activity) {
         Intent intent = new Intent(activity, GridLayoutManagerActivity.class);
@@ -39,21 +40,31 @@ public class GridLayoutManagerActivity extends AppCompatActivity {
             datas.add("GradItem" + i);
         }
 
-        mListRv.setLayoutManager(new GridLayoutManager(this, 5, RecyclerView.HORIZONTAL, false));
+        mListRv.setLayoutManager(new GridLayoutManager(this, 5));
         mListRv.setAdapter(vastAdapter);
-        View view = new View(this);
-        view.setBackgroundColor(Color.parseColor("#eeee34"));
-        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(100, ViewGroup.LayoutParams.MATCH_PARENT);
-        view.setLayoutParams(lp);
-        vastAdapter.addHeaderView(view);
-        vastAdapter.addFooterView(view);
+        headerOrFooterView = new View(this);
+        headerOrFooterView.setBackgroundColor(Color.parseColor("#eeee34"));
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
+        headerOrFooterView.setLayoutParams(lp);
+        vastAdapter.addHeaderView(headerOrFooterView);
+        vastAdapter.addFooterView(headerOrFooterView);
     }
 
     private VastAdapter vastAdapter = new VastAdapter<String>(datas, R.layout.item_list) {
         @Override
-        public void bindView(VastHolder holder, String data, int position) {
+        public void onCreateHolder(VastHolder holder) {
+            holder.getViewById(R.id.content_text_tv).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int count = removeAllHeaderView();
+                    notifyItemRangeRemoved(0, count);
+                }
+            });
+        }
+
+        @Override
+        public void bindHolder(VastHolder holder, String data, int position) {
             holder.setText(R.id.content_text_tv, data);
-            holder.itemView.getLayoutParams().width = 100;
         }
 
         @Override

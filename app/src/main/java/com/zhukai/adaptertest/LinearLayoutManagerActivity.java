@@ -45,9 +45,19 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
         mListRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         VastAdapter vastAdapter = new VastAdapter<String>(datas, R.layout.item_list) {
             @Override
-            public void bindView(VastHolder holder, String data, int position) {
+            public void onCreateHolder(VastHolder holder) {
+
+            }
+
+            @Override
+            public void bindHolder(VastHolder holder, String data, int position) {
                 holder.setText(R.id.content_text_tv, data);
                 holder.itemView.getLayoutParams().width = 100;
+            }
+
+            @Override
+            public int getItemViewIndex(int position) {
+                return super.getItemViewIndex(position);
             }
         };
         mListRv.setAdapter(vastAdapter);

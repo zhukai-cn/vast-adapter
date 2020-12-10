@@ -50,7 +50,12 @@ public class StaggeredGridLayoutManagerActivity extends AppCompatActivity {
 
     private VastAdapter vastAdapter = new VastAdapter<String>(datas, R.layout.item_list) {
         @Override
-        public void bindView(VastHolder holder, String data, int position) {
+        public void onCreateHolder(VastHolder holder) {
+
+        }
+
+        @Override
+        public void bindHolder(VastHolder holder, String data, int position) {
             holder.setText(R.id.content_text_tv, data);
             StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
             lp.width = 100 * (position % 2 == 0 ? 1 : 2);

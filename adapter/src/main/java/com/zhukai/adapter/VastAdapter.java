@@ -87,25 +87,6 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         this.layoutIds = layoutIds;
     }
 
-    private OnItemLongClickListener itemLongClickListenerProxy = new OnItemLongClickListener() {
-        @Override
-        public boolean onLongClick(int position) {
-            if (null != mOnItemLongClickListener) {
-                return mOnItemLongClickListener.onLongClick(position - getHeaderCount());
-            }
-            return false;
-        }
-    };
-
-    private OnItemClickListener itemClickListenerProxy = new OnItemClickListener() {
-        @Override
-        public void onClick(int position) {
-            if (null != mOnItemClickListener) {
-                mOnItemClickListener.onClick(position - getHeaderCount());
-            }
-        }
-    };
-
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -154,22 +135,58 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         if (isHeader(position)) {
             return new VastHolder(mHeaderViews.get(position));
         }
-
         if (isFooter(position)) {
-            return new VastHolder(mFooterViews.get(position - mData.size() - getHeaderCount()));
+            return new VastHolder(mFooterViews.get(position - getDataSize() - getHeaderCount()));
         }
 
-        VastHolder vastHolder = new VastHolder(LayoutInflater.from(parent.getContext()).inflate(layoutIds[viewType], parent, false));
-        vastHolder.setItemViewIndex(viewType);
+        final VastHolder vastHolder = new VastHolder(LayoutInflater.from(parent.getContext()).inflate(layoutIds[viewType], parent, false));
+        vastHolder.itemViewIndex = viewType;
 
+        //点击事件处理
         if (null != mOnItemClickListener) {
-            vastHolder.setOnClickListener(itemClickListenerProxy);
+            vastHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition(vastHolder);
+                    if (position != RecyclerView.NO_POSITION) {
+                        mOnItemClickListener.onClick(position);
+                    }
+                }
+            });
         }
+        //长按事件处理
         if (null != mOnItemLongClickListener) {
-            vastHolder.setOnLongClickListener(itemLongClickListenerProxy);
+            vastHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition(vastHolder);
+                    if (position != RecyclerView.NO_POSITION) {
+                        return mOnItemLongClickListener.onLongClick(position);
+                    }
+                    return false;
+                }
+            });
         }
-
+        onCreateHolder(vastHolder);
         return vastHolder;
+    }
+
+    /**
+     * 获取对应Holder的AdapterPosition值
+     */
+    public int getAdapterPosition(VastHolder holder) {
+        int adapterPosition = holder.getAdapterPosition();
+        if (adapterPosition == RecyclerView.NO_POSITION) {
+            return RecyclerView.NO_POSITION;
+        }
+        return adapterPosition - getHeaderCount();
+    }
+
+    /**
+     * 获取对应Holder的LayoutPosition值
+     */
+    public int getLayoutPosition(VastHolder holder) {
+        return holder.getLayoutPosition() - getHeaderCount();
     }
 
     @Override
@@ -180,7 +197,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         }
 
         int dataPosition = position - getHeaderCount();
-        bindView((VastHolder) holder, mData.get(dataPosition), dataPosition);
+        bindHolder((VastHolder) holder, mData.get(dataPosition), dataPosition);
 
         //处理预加载
         if (checkPreload(position)) {
@@ -194,7 +211,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     private boolean checkPreload(int position) {
         return null != mOnPreloadListener
                 && mHostRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE
-                && Math.max(mData.size() - 1 - getHeaderCount() - position, 0) == mPreloadThreshold;
+                && Math.max(getDataSize() - 1 - getHeaderCount() - position, 0) == mPreloadThreshold;
     }
 
     @Override
@@ -221,7 +238,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         if (isVacancyVisibility()) {
             return 1;
         }
-        return getHeaderCount() + getFooterCount() + mData.size();
+        return getHeaderCount() + getFooterCount() + getDataSize();
     }
 
     /**
@@ -235,7 +252,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 是否是尾view
      */
     private boolean isFooter(int position) {
-        int frontCount = getHeaderCount() + mData.size();
+        int frontCount = getHeaderCount() + getDataSize();
         return position >= frontCount && position - frontCount < getFooterCount();
     }
 
@@ -243,77 +260,126 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 是否展示无列表提示View
      */
     private boolean isVacancyVisibility() {
-        return (mHeaderViews.size() + mFooterViews.size() + mData.size()) < 1 && null != mVacancyView;
+        return (mHeaderViews.size() + mFooterViews.size() + getDataSize()) < 1 && null != mVacancyView;
+    }
+
+    /**
+     * 获取数据总量
+     */
+    public int getDataSize() {
+        return mData.size();
     }
 
     /**
      * 添加头部view
+     *
+     * @param view 添加对象view
+     * @return 对应的下标
      */
-    public void addHeaderView(View view) {
-        addHeaderView(mHeaderViews.size(), view);
+    public int addHeaderView(View view) {
+        int index = mHeaderViews.size();
+        if (!addHeaderView(index, view)) {
+            index = -1;
+        }
+        return index;
     }
 
     /**
      * 添加/插入头部
+     *
+     * @param index 目标下标
+     * @param view  添加对象view
+     * @return 是否成功
      */
-    public void addHeaderView(int index, View view) {
+    public boolean addHeaderView(int index, View view) {
+        if (index < 0 || view == null) {
+            return false;
+        }
         mHeaderViews.add(index, view);
+        return true;
+    }
+
+    /**
+     * 获取头部view数量
+     */
+    public final int getHeaderCount() {
+        return mHeaderViews.size();
     }
 
     /**
      * 移除头部view
      *
      * @param index 下标
+     * @return 移除的HeaderView
      */
-    public void removeHeaderView(int index) {
-        if (mHeaderViews.size() > index) {
-            mHeaderViews.remove(index);
+    public View removeHeaderView(int index) {
+        if (index >= 0 && mHeaderViews.size() > index) {
+            return mHeaderViews.remove(index);
         }
+        return null;
     }
 
     /**
      * 移除头部view
      *
      * @param view 指定view
+     * @return 返回移除的对应下标
      */
-    public void removeHeaderView(View view) {
+    public int removeHeaderView(View view) {
+        int index = -1;
         if (null != view) {
-            mHeaderViews.remove(view);
+            index = mHeaderViews.indexOf(view);
+            if (null == removeHeaderView(index)) {
+                index = -1;
+            }
         }
+        return index;
     }
 
     /**
      * 移除全部头部view
+     *
+     * @return 返回移除的总个数
      */
-    public void removeAllHeaderView() {
+    public int removeAllHeaderView() {
+        int count = getHeaderCount();
         mHeaderViews.clear();
+        return count;
     }
 
     /**
-     * 获取头部view数量
+     * 添加尾部View
+     *
+     * @param view 添加对象view
+     * @return 对应的下标
      */
-    public int getHeaderCount() {
-        return mHeaderViews.size();
-    }
-
-    /**
-     * 添加尾部view
-     */
-    public void addFooterView(View view) {
-        addFooterView(mFooterViews.size(), view);
+    public int addFooterView(View view) {
+        int index = mFooterViews.size();
+        if (!addFooterView(index, view)) {
+            index = -1;
+        }
+        return index;
     }
 
     /**
      * 添加/插入尾部view
+     *
+     * @param index 目标下标
+     * @param view  添加对象view
+     * @retrun 是否成功
      */
-    public void addFooterView(int index, View view) {
+    public boolean addFooterView(int index, View view) {
+        if (index < 0 || view == null) {
+            return false;
+        }
         mFooterViews.add(index, view);
+        return true;
     }
 
     /**
      * 获取尾部view的个数
      */
-    public int getFooterCount() {
+    public final int getFooterCount() {
         return mFooterViews.size();
     }
 
@@ -321,29 +387,41 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 移除尾部view
      *
      * @param index 下标
+     * @return 移除的FooterView
      */
-    public void removeFooterView(int index) {
-        if (mFooterViews.size() > index) {
-            mFooterViews.remove(index);
+    public View removeFooterView(int index) {
+        if (index >= 0 && mFooterViews.size() > index) {
+            return mFooterViews.remove(index);
         }
+        return null;
     }
 
     /**
      * 移除尾部view
      *
      * @param view 指定view
+     * @return 返回移除的对应下标
      */
-    public void removeFooterView(View view) {
+    public int removeFooterView(View view) {
+        int index = -1;
         if (null != view) {
-            mFooterViews.remove(view);
+            index = mFooterViews.indexOf(view);
+            if (null == removeFooterView(index)) {
+                index = -1;
+            }
         }
+        return index;
     }
 
     /**
      * 移除全部尾部view
+     *
+     * @return 返回移除的总个数
      */
-    public void removeAllFooterView() {
+    public int removeAllFooterView() {
+        int count = getFooterCount();
         mFooterViews.clear();
+        return count;
     }
 
     /**
@@ -403,9 +481,14 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     }
 
     /**
+     * Holder创建完成
+     */
+    public abstract void onCreateHolder(VastHolder holder);
+
+    /**
      * 绑定布局数据
      */
-    public abstract void bindView(VastHolder holder, D data, int position);
+    public abstract void bindHolder(VastHolder holder, D data, int position);
 
     /**
      * 多布局需求时，根据下标得到对应的布局资源id
