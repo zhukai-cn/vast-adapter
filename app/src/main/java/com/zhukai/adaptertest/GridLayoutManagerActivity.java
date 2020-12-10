@@ -48,18 +48,24 @@ public class GridLayoutManagerActivity extends AppCompatActivity {
         headerOrFooterView.setLayoutParams(lp);
         vastAdapter.addHeaderView(headerOrFooterView);
         vastAdapter.addFooterView(headerOrFooterView);
+        vastAdapter.setOnItemClickListener(new VastAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+
+            }
+        });
+        vastAdapter.setOnItemLongClickListener(new VastAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onLongClick(int position) {
+                return false;
+            }
+        });
     }
 
     private VastAdapter vastAdapter = new VastAdapter<String>(datas, R.layout.item_list) {
         @Override
         public void onCreateHolder(VastHolder holder) {
-            holder.getViewById(R.id.content_text_tv).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int count = removeAllHeaderView();
-                    notifyItemRangeRemoved(0, count);
-                }
-            });
+
         }
 
         @Override
