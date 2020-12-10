@@ -200,7 +200,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         bindHolder((VastHolder) holder, mData.get(dataPosition), dataPosition);
 
         //处理预加载
-        if (checkPreload(position)) {
+        if (checkPreload(dataPosition)) {
             mOnPreloadListener.onPreload();
         }
     }
@@ -211,7 +211,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     private boolean checkPreload(int position) {
         return null != mOnPreloadListener
                 && mHostRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE
-                && Math.max(getDataSize() - 1 - getHeaderCount() - position, 0) == mPreloadThreshold;
+                && Math.max(getDataSize() - 1 - position, 0) == mPreloadThreshold;
     }
 
     @Override

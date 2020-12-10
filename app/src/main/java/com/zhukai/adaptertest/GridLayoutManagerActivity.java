@@ -60,6 +60,12 @@ public class GridLayoutManagerActivity extends AppCompatActivity {
                 return false;
             }
         });
+        vastAdapter.setOnPreloadListener(new VastAdapter.OnPreloadListener() {
+            @Override
+            public void onPreload() {
+                
+            }
+        });
     }
 
     private VastAdapter vastAdapter = new VastAdapter<String>(datas, R.layout.item_list) {
