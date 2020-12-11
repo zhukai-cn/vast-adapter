@@ -483,7 +483,9 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     /**
      * Holder创建完成
      */
-    public abstract void onCreateHolder(VastHolder holder);
+    public void onCreateHolder(VastHolder holder){
+
+    }
 
     /**
      * 绑定布局数据
