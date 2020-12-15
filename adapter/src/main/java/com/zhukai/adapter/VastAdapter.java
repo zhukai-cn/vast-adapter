@@ -55,7 +55,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     /**
      * 空数据提示view
      */
-    private VastHintView mVacancyView;
+    private View mVacancyHintView;
 
     /**
      * 长按监听
@@ -129,7 +129,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isVacancyVisibility()) {
-            return new VastHolder(mVacancyView);
+            return new VastHolder(mVacancyHintView);
         }
         int position = positionFlag(viewType);
         if (isHeader(position)) {
@@ -260,7 +260,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 是否展示无列表提示View
      */
     private boolean isVacancyVisibility() {
-        return (mHeaderViews.size() + mFooterViews.size() + getDataSize()) < 1 && null != mVacancyView;
+        return (mHeaderViews.size() + mFooterViews.size() + getDataSize()) < 1 && null != mVacancyHintView;
     }
 
     /**
@@ -427,8 +427,8 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     /**
      * 设置空缺view
      */
-    public void setVacancyView(VastHintView vacancyView) {
-        this.mVacancyView = vacancyView;
+    public void setVacancyView(View vacancyView) {
+        this.mVacancyHintView = vacancyView;
     }
 
     /**

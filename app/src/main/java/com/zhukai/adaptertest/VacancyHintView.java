@@ -1,13 +1,13 @@
-package com.zhukai.adapter;
+package com.zhukai.adaptertest;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -19,42 +19,34 @@ import androidx.core.content.ContextCompat;
 /**
  * 缺省图View
  * 默认样式为整体内容居中，内容包括上为图片，下为文字。
- * 支持完全自定义View修改内容。
  */
-public class VastHintView extends RelativeLayout {
+public class VacancyHintView extends LinearLayout {
 
-    private RelativeLayout root;
     private ImageView img;
     private TextView text;
 
-    private VastHintView(Context context) {
+    private VacancyHintView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.layout_vast_hint_view, this);
         this.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                 , ViewGroup.LayoutParams.MATCH_PARENT));
-        root = findViewById(R.id.hint_root);
+        this.setOrientation(VERTICAL);
+        this.setGravity(Gravity.CENTER);
         img = findViewById(R.id.hint_img);
         text = findViewById(R.id.hint_text);
     }
 
-    private RelativeLayout getRoot() {
-        return this.root;
-    }
-
-    private ImageView getImg() {
+    public ImageView getHintImgView() {
         return this.img;
     }
 
-    private TextView getText() {
+    public TextView getHintTextView() {
         return this.text;
     }
-
 
     public static class Builder {
 
         private Context mContext;
-
-        private View customView;
 
         private Drawable imgDrawable;
 
@@ -66,14 +58,6 @@ public class VastHintView extends RelativeLayout {
 
         public Builder(Context context) {
             this.mContext = context;
-        }
-
-        /**
-         * 设置自定义缺省图View
-         */
-        public Builder setCustomView(View view) {
-            this.customView = view;
-            return this;
         }
 
         /**
@@ -137,40 +121,30 @@ public class VastHintView extends RelativeLayout {
         /**
          * 根据内容构建缺省图View
          */
-        public VastHintView build() {
+        public VacancyHintView build() {
 
-            VastHintView vastHintView = new VastHintView(mContext);
+            VacancyHintView vacancyHintView = new VacancyHintView(mContext);
+            ImageView hintImg = vacancyHintView.getHintImgView();
+            TextView hintText = vacancyHintView.getHintTextView();
 
-            RelativeLayout hintRoot = vastHintView.getRoot();
-            ImageView hintImg = vastHintView.getImg();
-            TextView hintText = vastHintView.getText();
-
-            if (null != customView) {
-                hintImg.setVisibility(GONE);
-                hintText.setVisibility(GONE);
-                hintRoot.addView(customView);
-            } else {
-
-                if (null != imgDrawable) {
-                    hintImg.setVisibility(VISIBLE);
-                    hintImg.setImageDrawable(imgDrawable);
-                }
-
-                if (!TextUtils.isEmpty(textString)) {
-                    hintText.setVisibility(VISIBLE);
-                    hintText.setText(textString);
-
-                    if (textSize > 0) {
-                        hintText.setTextSize(textSize);
-                    }
-
-                    if (textColorInt != 0) {
-                        hintText.setTextColor(textColorInt);
-                    }
-                }
+            if (null != imgDrawable) {
+                hintImg.setVisibility(VISIBLE);
+                hintImg.setImageDrawable(imgDrawable);
             }
 
-            return vastHintView;
+            if (!TextUtils.isEmpty(textString)) {
+                hintText.setVisibility(VISIBLE);
+                hintText.setText(textString);
+
+                if (textSize > 0) {
+                    hintText.setTextSize(textSize);
+                }
+
+                if (textColorInt != 0) {
+                    hintText.setTextColor(textColorInt);
+                }
+            }
+            return vacancyHintView;
         }
     }
 

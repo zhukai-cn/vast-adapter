@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.zhukai.adapter.VastAdapter;
-import com.zhukai.adapter.VastHintView;
 import com.zhukai.adapter.VastHolder;
 
 import java.util.ArrayList;
@@ -67,9 +65,8 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
         view.setLayoutParams(lp);
 //        vastAdapter.addHeaderView(view);
 //        vastAdapter.addFooterView(view);
-        TextView textView = new TextView(this);
-        textView.setText("没有内容");
-        vastAdapter.setVacancyView(new VastHintView.Builder(this).setText("没有内容").setTextColorRes(R.color.colorPrimary).setTextSize(20).build());
+
+//        vastAdapter.setVacancyView(new VacancyHintView.Builder(this).setText("没有内容").setTextColorRes(R.color.colorPrimary).setTextSize(20).build());
     }
 
 }
