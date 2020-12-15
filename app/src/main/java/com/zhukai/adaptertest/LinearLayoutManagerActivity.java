@@ -66,7 +66,7 @@ public class LinearLayoutManagerActivity extends AppCompatActivity {
 //        vastAdapter.addHeaderView(view);
 //        vastAdapter.addFooterView(view);
 
-//        vastAdapter.setVacancyView(new VacancyHintView.Builder(this).setText("没有内容").setTextColorRes(R.color.colorPrimary).setTextSize(20).build());
+        vastAdapter.setVacancyView(new VacancyHintView.Builder(this).setText("没有内容").setTextColorRes(R.color.colorPrimary).setTextSize(20).build());
     }
 
 }
