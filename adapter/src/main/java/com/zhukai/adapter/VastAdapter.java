@@ -125,24 +125,19 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         super.onViewAttachedToWindow(holder);
     }
 
-    private VastHolder clearHolderRecyclable(VastHolder vastHolder){
-        vastHolder.setIsRecyclable(false);
-        return vastHolder;
-    }
-
     @NonNull
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isVacancyVisibility()) {
-            return clearHolderRecyclable(new VastHolder(mVacancyHintView));
+            return new VastHolder(mVacancyHintView);
         }
 
         int position = positionFlag(viewType);
         if (isHeader(position)) {
-            return clearHolderRecyclable(new VastHolder(mHeaderViews.get(position)));
+            return new VastHolder(mHeaderViews.get(position));
         }
         if (isFooter(position)) {
-            return clearHolderRecyclable(new VastHolder(mFooterViews.get(position - getDataCount() - getHeaderCount())));
+            return new VastHolder(mFooterViews.get(position - getDataCount() - getHeaderCount()));
         }
 
         final VastHolder vastHolder = new VastHolder(LayoutInflater.from(parent.getContext()).inflate(layoutIds[viewType], parent, false));
