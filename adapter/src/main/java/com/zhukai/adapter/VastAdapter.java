@@ -125,18 +125,24 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         super.onViewAttachedToWindow(holder);
     }
 
+    private VastHolder clearHolderRecyclable(VastHolder vastHolder){
+        vastHolder.setIsRecyclable(false);
+        return vastHolder;
+    }
+
     @NonNull
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isVacancyVisibility()) {
-            return new VastHolder(mVacancyHintView);
+            return clearHolderRecyclable(new VastHolder(mVacancyHintView));
         }
+
         int position = positionFlag(viewType);
         if (isHeader(position)) {
-            return new VastHolder(mHeaderViews.get(position));
+            return clearHolderRecyclable(new VastHolder(mHeaderViews.get(position)));
         }
         if (isFooter(position)) {
-            return new VastHolder(mFooterViews.get(position - getDataSize() - getHeaderCount()));
+            return clearHolderRecyclable(new VastHolder(mFooterViews.get(position - getDataCount() - getHeaderCount())));
         }
 
         final VastHolder vastHolder = new VastHolder(LayoutInflater.from(parent.getContext()).inflate(layoutIds[viewType], parent, false));
@@ -211,7 +217,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     private boolean checkPreload(int position) {
         return null != mOnPreloadListener
                 && mHostRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE
-                && Math.max(getDataSize() - 1 - position, 0) == mPreloadThreshold;
+                && Math.max(getDataCount() - 1 - position, 0) == mPreloadThreshold;
     }
 
     @Override
@@ -238,7 +244,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
         if (isVacancyVisibility()) {
             return 1;
         }
-        return getHeaderCount() + getFooterCount() + getDataSize();
+        return getHeaderCount() + getFooterCount() + getDataCount();
     }
 
     /**
@@ -252,7 +258,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 是否是尾view
      */
     private boolean isFooter(int position) {
-        int frontCount = getHeaderCount() + getDataSize();
+        int frontCount = getHeaderCount() + getDataCount();
         return position >= frontCount && position - frontCount < getFooterCount();
     }
 
@@ -260,14 +266,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      * 是否展示无列表提示View
      */
     private boolean isVacancyVisibility() {
-        return (mHeaderViews.size() + mFooterViews.size() + getDataSize()) < 1 && null != mVacancyHintView;
-    }
-
-    /**
-     * 获取数据总量
-     */
-    public int getDataSize() {
-        return mData.size();
+        return (mHeaderViews.size() + mFooterViews.size() + getDataCount()) < 1 && null != mVacancyHintView;
     }
 
     /**
@@ -483,7 +482,7 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
     /**
      * Holder创建完成
      */
-    public void onCreateHolder(VastHolder holder){
+    public void onCreateHolder(VastHolder holder) {
 
     }
 
@@ -499,6 +498,13 @@ public abstract class VastAdapter<D> extends RecyclerView.Adapter {
      */
     public int getItemViewIndex(int position) {
         return 0;
+    }
+
+    /**
+     * 获取数据总量
+     */
+    public int getDataCount() {
+        return mData.size();
     }
 
 }
